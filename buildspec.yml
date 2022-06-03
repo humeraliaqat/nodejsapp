@@ -8,21 +8,21 @@ phases:
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 979490057625.dkr.ecr.us-east-1.amazonaws.com
       - REPOSITORY_URI=979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-ecs-task
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - humera-ecs-task=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - humera-ecs=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t humera-ecs-task .
-      - docker tag humera-ecs-task:latest 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-ecs-task:latest
+      - docker build -t humera-ecs .
+      - docker tag humera-ecs:latest 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-ecs:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker push humera-ecs-task:latest
-      - docker push 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-ecs-task:latest
+      - docker push humera-ecs:latest
+      - docker push 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-ecs:latest
       - echo Writing image definitions file...
-      - printf '[{"name":"nodeapp","imageUri":"%s"}]' 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-ecs-task:latest > imagedefinitions.json
+      - printf '[{"name":"nodeapp","imageUri":"%s"}]' 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-ecs:latest > imagedefinitions.json
       - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json
