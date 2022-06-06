@@ -12,7 +12,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...          
-      - docker build -t humerafargaterepo:latest .
+      - docker build -t humerafargaterepo .
       - docker tag humerafargaterepo:latest 979490057625.dkr.ecr.us-east-1.amazonaws.com/humerafargaterepo:latest     
   post_build:
     commands:
