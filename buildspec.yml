@@ -1,28 +1,25 @@
 version: 0.2
 run-as: root
 
+
 phases:
   pre_build:
     commands:
-      - echo Installing dependecies
-      - npm install
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 979490057625.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=979490057625.dkr.ecr.us-east-1.amazonaws.com/humerafargaterepo
   build:
     commands:
-      - echo Building and tagging docker images 
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 979490057625.dkr.ecr.us-east-1.amazonaws.com
-      - docker pull 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-repo:latest
-      - docker tag humera-repo:latest 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-repo:latest
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 979490057625.dkr.ecr.us-east-1.amazonaws.com
-      - docker tag humera-repo:latest 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-repo:latest
-      - docker push 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-repo:latest
-      - docker tag humera-repo:latest 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-repo:latest
-      
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t humerafargaterepo:latest .
+      - docker tag humerafargaterepo:latest 979490057625.dkr.ecr.us-east-1.amazonaws.com/humerafargaterepo:latest     
   post_build:
     commands:
-      - echo Pushing to ECR
-      - docker push 979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-repo:latest
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push 979490057625.dkr.ecr.us-east-1.amazonaws.com/humerafargaterepo:latest
       - echo Writing image definitions file...
-      - printf '[{"name":"%s","imageUri":"979490057625.dkr.ecr.us-east-1.amazonaws.com/humera-repo"}]' > imagedefinitions.json
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $REPOSITORY_URI:latest > imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
-
