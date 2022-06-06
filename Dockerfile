@@ -1,4 +1,4 @@
-FROM public.ecr.aws/bitnami/node:$CODEBUILD_RESOLVED_SOURCE_VERSION
+FROM public.ecr.aws/bitnami/node:latest
 
 WORKDIR /app
 
