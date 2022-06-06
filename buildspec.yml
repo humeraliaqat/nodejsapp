@@ -10,6 +10,7 @@ phases:
       - REPOSITORY_URI=979490057625.dkr.ecr.us-east-1.amazonaws.com/humerafargaterepo
   build:
     commands:
+      - echo $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Build started on `date`
       - echo Building the Docker image...          
       - docker build -t humerafargaterepo .
