@@ -13,13 +13,13 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...          
       - docker build -t humerafargaterepo .
-      - docker tag humerafargaterepo:latest 979490057625.dkr.ecr.us-east-1.amazonaws.com/humerafargaterepo:latest     
+      - docker tag humerafargaterepo:$CODEBUILD_RESOLVED_SOURCE_VERSION 979490057625.dkr.ecr.us-east-1.amazonaws.com/humerafargaterepo:$CODEBUILD_RESOLVED_SOURCE_VERSION     
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push 979490057625.dkr.ecr.us-east-1.amazonaws.com/humerafargaterepo:latest
+      - docker push 979490057625.dkr.ecr.us-east-1.amazonaws.com/humerafargaterepo:$CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo Writing image definitions file...
-      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $REPOSITORY_URI:latest > imagedefinitions.json
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION > imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
